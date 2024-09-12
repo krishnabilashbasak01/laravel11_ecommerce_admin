@@ -8,8 +8,17 @@ Route::get("/", function () {
 });
 
 Route::prefix("/admin")->group(function () {
-    Route::match(["get", "post"], "/dashboard", [
+    // Login
+    Route::match(["get", "post"], "/login", [
         AdminController::class,
-        "index",
-    ])->name("dashboard");
+        "login",
+    ])->name("login");
+
+    // Admin
+    Route::group(["middleware" => "admin"], function () {
+        Route::match(["get", "post"], "/dashboard", [
+            AdminController::class,
+            "index",
+        ])->name("dashboard");
+    });
 });
