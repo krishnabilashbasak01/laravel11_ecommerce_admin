@@ -20,5 +20,9 @@ Route::prefix("/admin")->group(function () {
             AdminController::class,
             "index",
         ])->name("dashboard");
+        Route::match(["get", "post"], "/user/all-users", [
+            AdminController::class,
+            "users",
+        ])->name("users");
     });
 });

@@ -63,7 +63,7 @@
   <script src="{{ asset('admin/js/adminlte.js')}}"></script>
 
   <!-- OPTIONAL SCRIPTS -->
-  <script src="{{ asset('admin/plugins/chart.js/Chart.min.js')}}"></script>
+
   <!-- AdminLTE for demo purposes -->
   <script src="{{ asset('admin/js/demo.js')}}"></script>
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
@@ -81,25 +81,9 @@
   <script src="{{ asset('admin/plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
   <script src="{{ asset('admin/plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
   <script src="{{ asset('admin/plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
-  <script>
-    $(function() {
-      $("#example1").DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
-    });
-  </script>
+
+
+  @yield('scripts')
 </body>
 
 </html>

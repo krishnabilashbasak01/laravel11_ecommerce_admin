@@ -32,6 +32,11 @@ class AdminController extends Controller
         return view("admin.login");
     }
 
+    public function users(Request $request): RedirectResponse|View
+    {
+        return view("admin.users");
+    }
+
     public function logout()
     {
         Auth::guard("admin")->logout();
