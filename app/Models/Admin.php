@@ -18,7 +18,7 @@ class Admin extends Authenticatable
         "name",
         "email",
         "password",
-        "user_type",
+        "user_type_id",
         "mobile",
         "image",
         "status",

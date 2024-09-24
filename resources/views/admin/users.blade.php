@@ -648,9 +648,10 @@
       "responsive": true,
     });
     $('#createUserTypeForm').submit(function(e) {
-      console.log(e);
+      
       e.preventDefault();
       var formData = new FormData(this);
+      // console.log(e);
       $.ajax({
         url: "/api/user-types",
         type: "POST",

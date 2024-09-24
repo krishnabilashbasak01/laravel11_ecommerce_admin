@@ -8,6 +8,33 @@ use Illuminate\Support\Facades\Validator;
 
 class UserTypeController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $userTypes = UserType::all();
+
+        return response([
+            'status' => 'success',
+            'data' => $userTypes
+        ], 200);
+    }
+
+    public function findAdminByUserType($name)
+    {
+        $userType = UserType::where('name', $name)->first();
+        if (!$userType) {
+            return response([
+                'status' => 'error',
+                'message' => 'User type not found',
+            ], 404); // 404 Not Found
+        }
+
+        return response([
+            'status' => 'success',
+            'data' => $userType->users,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -28,6 +55,7 @@ class UserTypeController extends Controller
         $userType = UserType::create([
             "name" => $request->name,
         ]);
+
 
         return response(
             [
