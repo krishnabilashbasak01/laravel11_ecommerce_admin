@@ -11,12 +11,16 @@ class UserTypeController extends Controller
     // get all user types
     public function index(Request $request)
     {
-        $userTypes = UserType::all();
+        $activeUserTypes = UserType::all();
+        $deletedUserTypes = UserType::onlyTrashed()->get();
 
         return response(
             [
                 "status" => "success",
-                "data" => $userTypes,
+                "data" => [
+                    "active" => $activeUserTypes,
+                    "deleted" => $deletedUserTypes,
+                ],
             ],
             200
         );
@@ -116,6 +120,30 @@ class UserTypeController extends Controller
                     "status" => "error",
                     "data" => [],
                     "message" => "No Deleted UserType Found",
+                ],
+                404
+            );
+        }
+    }
+
+    // restore soft deleted user type
+    public function restore($id)
+    {
+        $restored = UserType::restoreSoftDeletedById($id);
+
+        if ($restored) {
+            return response(
+                [
+                    "status" => "success",
+                    "message" => "User type restored successfully",
+                ],
+                200
+            );
+        } else {
+            return response(
+                [
+                    "status" => "error",
+                    "message" => "Failed to restore user type",
                 ],
                 404
             );
