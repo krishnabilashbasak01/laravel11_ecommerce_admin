@@ -8,9 +8,23 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::post('/user-types', [UserTypeController::class, 'store']);
-Route::get('/user-types', [UserTypeController::class, 'index']);
-Route::get('/user-type/{name}', [UserTypeController::class, 'findAdminByUserType']);
+Route::post("/user-types", [UserTypeController::class, "store"]);
+Route::get("/user-types", [UserTypeController::class, "index"]);
+Route::get("/users-by-type/{name}", [
+    UserTypeController::class,
+    "findAdminByUserType",
+]);
+Route::delete("/user-types/{id}", [UserTypeController::class, "destroy"]);
+Route::delete("/user-types/{id}/permanent", [
+    UserTypeController::class,
+    "permanentDestroy",
+]);
+
+Route::get("/user-types/soft-deleted", [
+    UserTypeController::class,
+    "getSoftDeletedUserTypes",
+]);
+// I have to work on to restore softdeleted user type
 
 // Route::get('/test', function (Request $request) {
 //     return response()->json('hello');

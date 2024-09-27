@@ -40,6 +40,7 @@
                             </div>
                         </div>
                         <div class="card-body">
+<!-- User Types -->
 
                         </div>
                     </div>
@@ -61,7 +62,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-
+<!-- User Permission -->
                         </div>
                     </div>
                 </div>
@@ -71,9 +72,6 @@
                 <div class="card-header">
                   <h3 class="card-title">DataTable with default features</h3>
                   <div class="card-tools">
-
-
-
                       <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#crateUserModal" title="Add New User">
                         <i class="fa fa-user-plus"></i>
                       </button>
@@ -647,8 +645,15 @@
       "autoWidth": false,
       "responsive": true,
     });
+
+    // User Type Loading state
+    var userTypeLoadingState = false;
+    var userTypes = []
+
+    refreshUserTypes()
+
     $('#createUserTypeForm').submit(function(e) {
-      
+
       e.preventDefault();
       var formData = new FormData(this);
       // console.log(e);
@@ -669,8 +674,18 @@
       });
     });
 
-    function refreshUserTypes() {
 
+    function refreshUserTypes() {
+      userTypeLoadingState = true
+      var settings = {
+        "url": "/api/user-types",
+        "method": "GET",
+        "timeout": 0,
+      };
+
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+      });
     }
 
   });
