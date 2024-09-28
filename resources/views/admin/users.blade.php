@@ -40,7 +40,54 @@
                             </div>
                         </div>
                         <div class="card-body">
-<!-- User Types -->
+                        <!-- User Types -->
+                        <div class="card card-primary card-outline card-tabs">
+                            <div class="card-header p-0 pt-1 border-bottom-0">
+                                <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="custom-tabs-three-Active-tab" data-toggle="pill" href="#custom-tabs-three-Active" role="tab" aria-controls="custom-tabs-three-Active" aria-selected="true">Active</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="custom-tabs-three-Deleted-tab" data-toggle="pill" href="#custom-tabs-three-Deleted" role="tab" aria-controls="custom-tabs-three-Deleted" aria-selected="false">Deleted</a>
+                                </li>
+
+                                </ul>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content" id="custom-tabs-three-tabContent">
+                                    <div class="tab-pane fade show active" id="custom-tabs-three-Active" role="tabpanel" aria-labelledby="custom-tabs-three-Active-tab">
+                                        <table id="active_user_table" class="table table-bordered table-striped">
+                                          <thead>
+                                          <tr>
+                                            <th>Id</th>
+                                            <th>Type</th>
+                                            <th>Action</th>
+                                          </tr>
+                                          </thead>
+                                          <tbody>
+
+                                          </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane fade" id="custom-tabs-three-Deleted" role="tabpanel" aria-labelledby="custom-tabs-three-Deleted-tab">
+                                        <table id="deleted_user_table" class="table table-bordered table-striped">
+                                          <thead>
+                                          <tr>
+                                            <th>Id</th>
+                                            <th>Type</th>
+                                            <th>Action</th>
+                                          </tr>
+                                          </thead>
+                                          <tbody>
+
+                                          </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        <!-- /.card -->
+                        </div>
 
                         </div>
                     </div>
@@ -62,7 +109,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-<!-- User Permission -->
+                            <!-- User Permission -->
                         </div>
                     </div>
                 </div>
@@ -81,8 +128,8 @@
                     <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
                         <i class="fas fa-times"></i>
                     </button>
-</div>
                 </div>
+            </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
@@ -624,6 +671,35 @@
     </div>
 </div>
 
+
+{{-- Edit User Type Form --}}
+<div class="modal fade" id="editUserTypeModal" tabindex="-1" role="dialog" aria-labelledby="cratePermissionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cratePermissionModalLabel">Edit User Type</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserTypeForm">
+                    <input type="hidden" id="editUserTypeId" name="id">
+                    <div class="form-group">
+                        <label for="editUserTypeName">User Type Name</label>
+                        <input type="text" class="form-control" id="editUserTypeName" name="name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update User Type</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @endsection
 
 
@@ -637,6 +713,26 @@
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+
+    $('#active_user_table').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+
+    $('#deleted_user_table').DataTable({
       "paging": true,
       "lengthChange": false,
       "searching": false,
@@ -675,19 +771,183 @@
     });
 
 
-    function refreshUserTypes() {
-      userTypeLoadingState = true
-      var settings = {
-        "url": "/api/user-types",
-        "method": "GET",
-        "timeout": 0,
-      };
+    function addUserTypeToActiveTable(userType) {
+      var actionButtons = '<div><button class="btn btn-sm btn-primary edit-user-type" data-id="' + userType._id + '"><i class="fa fa-edit" aria-hidden="true"></i></button> ' +
+                          '<button class="btn btn-sm btn-danger delete-user-type" data-id="' + userType._id + '"><i class="fa fa-trash" aria-hidden="true"></i></button></div>';
 
-      $.ajax(settings).done(function (response) {
-        console.log(response);
+      $('#active_user_table').DataTable().row.add([
+        userType.index,
+        userType.name,
+        actionButtons
+      ]).draw(false);
+    }
+
+    function addUserTypeToDeletedTable(userType) {
+      var actionButtons = '<div><button class="btn btn-sm btn-primary restore-user-type" data-id="' + userType._id + '"><i class="fa fa-undo" aria-hidden="true"></i></button> ';
+
+      $('#deleted_user_table').DataTable().row.add([
+        userType.index,
+        userType.name,
+        actionButtons
+      ]).draw(false);
+    }
+    function refreshUserTypes() {
+      userTypeLoadingState = true;
+
+
+
+      $.ajax({
+        url: "/api/user-types",
+        method: "GET",
+        success: function(response) {
+          if(response.status == 'success'){
+            // console.log( response.data.deleted);
+            $('#active_user_table').DataTable().clear();
+            response.data.active.forEach(function(userType) {
+              userType.index = response.data.active.indexOf(userType) + 1;
+              addUserTypeToActiveTable(userType);
+            });
+            $('#deleted_user_table').DataTable().clear();
+            response.data.deleted.forEach(function(userType) {
+              userType.index = response.data.deleted.indexOf(userType) + 1;
+              addUserTypeToDeletedTable(userType);
+            });
+
+          }
+          userTypeLoadingState = false;
+        },
+        error: function(error) {
+          console.log("Error fetching user types", error);
+          alert("Error fetching user types. Please try again.");
+          userTypeLoadingState = false;
+        }
       });
     }
 
+    $(document).on('click', '.edit-user-type', function() {
+      var userTypeId = $(this).data('id');
+      // Find the row that contains this button
+        var row = $(this).closest('tr');
+
+        // Get the DataTable instance
+        var table = $('#active_user_table').DataTable();
+
+        // Get the data for this row
+        var rowData = table.row(row).data();
+
+
+        // Open the edit modal and populate it with the user type data
+        $('#editUserTypeModal').modal('show');
+        $('#editUserTypeId').val(userTypeId);
+        $('#editUserTypeName').val(rowData[1]);
+
+        // Handle the form submission for editing
+        $('#editUserTypeForm').submit(function(e) {
+            e.preventDefault();
+            $(document).Toasts('create', {
+             class: 'bg-success',
+             title: 'Loading',
+             subtitle: 'In Progress',
+             // body: data.message
+             body: '<center><i class="fas fa-2x fa-sync-alt"></i><center>'
+           })
+            var formData = new FormData(this);
+
+            var data = {'name' : formData.get('name')}
+
+            $.ajax({
+                url: "/api/user-types/" + userTypeId,
+                type: "PUT",
+                data: JSON.stringify(data),
+                processData: false,
+                contentType: "application/json",
+                success: function(data) {
+                    // console.log(data);
+                     $(document).Toasts('create', {
+                      class: 'bg-success',
+                      title: 'Success',
+                      subtitle: 'Message',
+                      body: data.message
+
+                    })
+                    $('#editUserTypeModal').modal('hide');
+                    refreshUserTypes();
+                },
+                error: function(error) {
+                    console.log("Error updating user type", error);
+                    alert("Error updating user type. Please try again.");
+                }
+            });
+        });
+
+
+
+
+    });
+
+    $(document).on('click', '.delete-user-type', function() {
+      var userTypeId = $(this).data('id');
+      if (confirm("Are you sure you want to delete this user type?")) {
+        // Implement delete functionality here
+        console.log("Delete user type with ID:", userTypeId);
+        $.ajax({
+          url: "/api/user-types/" + userTypeId,
+          type: "DELETE",
+          success: function(data) {
+            console.log("User type deleted successfully");
+            $(document).Toasts('create', {
+              class: 'bg-success',
+              title: 'Success',
+              subtitle: 'Message',
+              body: 'User type deleted successfully'
+            });
+            refreshUserTypes();
+          },
+          error: function(error) {
+            console.log("Error deleting user type", error);
+            $(document).Toasts('create', {
+              class: 'bg-danger',
+              title: 'Error',
+              subtitle: 'Message',
+              body: 'Error deleting user type. Please try again.'
+            });
+          }
+        });
+      }
+    });
+
+    $(document).on('click', '.restore-user-type', function(){
+      var userTypeId = $(this).data('id');
+      if (confirm("Are you sure you want to restore this user type?")) {
+        $.ajax({
+          url: "/api/user-types/" + userTypeId + "/restore",
+          type: "POST",
+          success: function(data) {
+            // console.log("User type restored successfully");
+            $(document).Toasts('create', {
+              class: 'bg-success',
+              title: 'Success',
+              subtitle: 'Message',
+              body: 'User type restored successfully'
+            });
+            refreshUserTypes();
+          },
+          error: function(error) {
+            console.log("Error restoring user type", error);
+            $(document).Toasts('create', {
+              class: 'bg-danger',
+              title: 'Error',
+              subtitle: 'Message',
+              body: 'Error restoring user type. Please try again.'
+            });
+          }
+        });
+      }
+
+    })
+
   });
+
+
 </script>
 @endsection

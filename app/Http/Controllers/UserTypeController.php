@@ -78,6 +78,47 @@ class UserTypeController extends Controller
         );
     }
 
+    // update user type
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            "name" => "required|string|max:255",
+        ]);
+
+        if ($validator->fails()) {
+            return response(
+                [
+                    "status" => "error",
+                    "message" => "Validation failed",
+                    "errors" => $validator->errors(),
+                ],
+                422
+            );
+        }
+        // Find the UserType by ID
+        $userType = UserType::find($id);
+
+        // Check if the UserType exists
+        if (!$userType) {
+            return response(
+                [
+                    "status" => "error",
+                    "message" => "User type not found",
+                ],
+                404
+            );
+        }
+        $userType->update($request->all());
+        return response(
+            [
+                "status" => "success",
+                "message" => "User type successfully updated",
+                "data" => $userType,
+            ],
+            200
+        );
+    }
+
     // delete user type by id
     public function destroy($id)
     {

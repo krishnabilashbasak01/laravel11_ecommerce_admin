@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Route;
 // create user-type
 Route::post("/user-types", [UserTypeController::class, "store"]);
 
+// edit user-type
+Route::put("/user-types/{id}", [UserTypeController::class, "update"]);
+
 // get all user types
 Route::get("/user-types", [UserTypeController::class, "index"]);
 
